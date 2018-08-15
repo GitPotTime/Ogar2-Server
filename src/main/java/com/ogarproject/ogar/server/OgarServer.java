@@ -16,16 +16,15 @@
  */
 package com.ogarproject.ogar.server;
 
-import com.ogarproject.ogar.server.world.WorldImpl;
 import com.google.common.base.Throwables;
 import com.ogarproject.ogar.api.Ogar;
 import com.ogarproject.ogar.api.Server;
 import com.ogarproject.ogar.api.plugin.Messenger;
 import com.ogarproject.ogar.api.plugin.PluginManager;
 import com.ogarproject.ogar.api.plugin.Scheduler;
-import com.ogarproject.ogar.server.config.OgarConfig;
 import com.ogarproject.ogar.server.config.JsonConfiguration;
 import com.ogarproject.ogar.server.config.LegacyConfig;
+import com.ogarproject.ogar.server.config.OgarConfig;
 import com.ogarproject.ogar.server.gui.ServerCLI;
 import com.ogarproject.ogar.server.gui.ServerGUI;
 import com.ogarproject.ogar.server.net.NetworkManager;
@@ -34,21 +33,17 @@ import com.ogarproject.ogar.server.tick.TickWorker;
 import com.ogarproject.ogar.server.tick.Tickable;
 import com.ogarproject.ogar.server.tick.TickableSupplier;
 import com.ogarproject.ogar.server.world.PlayerImpl;
+import com.ogarproject.ogar.server.world.WorldImpl;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class OgarServer implements Server {
 
@@ -156,7 +151,6 @@ public class OgarServer implements Server {
         } catch (IOException ex) {
             log.log(Level.SEVERE, "Error while adding FileHandler to logger. Logs will not be output to a file.", ex);
         }
-
     }
 
     public void loadConfig() {
@@ -191,10 +185,11 @@ public class OgarServer implements Server {
             // Spawn a user-friendly GUI
             ServerGUI.spawn(this);
         }
-
+/*
+Update checker removed
         Calendar expiryDate = Calendar.getInstance();
         expiryDate.clear();
-        expiryDate.set(2016, 2, 29);
+        expiryDate.set(2016, Calendar.MARCH, 29);
         if (Calendar.getInstance().after(expiryDate)) {
             log.warning("It looks like you may be using an outdated version of Ogar 2.");
             log.warning("Please check http://www.ogarproject.com for a new version.");
@@ -205,7 +200,7 @@ public class OgarServer implements Server {
                 //
             }
         }
-
+*/
         Ogar.setServer(this);
         pluginManager = new PluginManager(this);
 
@@ -342,6 +337,9 @@ public class OgarServer implements Server {
                 break;
             case "stop":
                 shutdown();
+                break;
+            case "list":
+                log.info(playerList.getAllPlayers().size() + "/" + configuration.server.maxConnections);
                 break;
             default:
                 log.info("Unknown command. Type \"help\" for help.");
